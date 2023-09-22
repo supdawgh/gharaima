@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gm/cleaning.dart';
+import 'package:gm/electricity.dart';
+import 'package:gm/plumbing.dart';
+//import 'package:gm/plumbing.dart';
 import 'package:pinput/pinput.dart';
 
 import 'dart:convert';
-import 'package:gm/otp.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 
-import 'package:gm/MyDrawer.dart';
 
 class MyOtp extends StatefulWidget {
   final String firstName;
@@ -67,7 +68,7 @@ class _MyOtpState extends State<MyOtp> {
   }
   bool userRegistered=false;
   Future<void> validateOtp() async {
-    var url = Uri.parse('http://172.16.7.116:5000/api/V1/system/validateOtp');
+    var url = Uri.parse('http://192.168.1.68:5000/api/V1/system/validateOtp');
     var registerBody = {
       "phoneNumber":widget.contactNo,
       "userOtp":phoneOtp
@@ -190,6 +191,7 @@ class _MyOtpState extends State<MyOtp> {
   }
 }
 
+//DASHBOARD
 
 class MyDash extends StatefulWidget {
   const MyDash({Key? key}) : super(key: key);
@@ -199,6 +201,9 @@ class MyDash extends StatefulWidget {
 }
 
 class _MyDashState extends State<MyDash> {
+  get children => int;
+
+
 
 /*Widget _selectedCleaning({0
 required Color color,
@@ -258,47 +263,63 @@ Text(subtitle, style: const TextStyle(
 
             ],
           ),),
-         /* Container(
-        child: Center(
-          child: Text('Gharaima'),
-        )
-          ),
-          Drawer(
-            child:SingleChildScrollView(
-              child:Container(
-                child:  Column(
-                  children:[
-                  MyHeaderDrawer(),
-                // MyDrawerList(),
-        ],)
-              )
-            )
-          ),*/
-         /* Widget MyDrawerList(){
-            return Container(
-              padding:EdgeInsets.only(top:15),
-              child: Column(
-
-              ),
-            )
-          },*/
+         
           const SizedBox(
             height: 20.0,
                ),
           Container(
             height: 200.0,
-            child: GridView(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3,childAspectRatio: 3/2),
-            children: <Widget>[
-            _gridItem(Icons.plumbing,"Plumbing"),
-            _gridItem(Icons.cleaning_services,"Cleaning"),
-            _gridItem(Icons.car_repair,"Mechanic"),
-            _gridItem(Icons.electrical_services,"Electricity"),
-            _gridItem(Icons.brush_sharp,"Parlor"),
-            _gridItem(Icons.format_paint_rounded,"Paint"),
-
-            ],),
             
+            child: GridView(gridDelegate:
+             const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 3/2),
+            children: <Widget>[
+              IconButton( icon: _gridItem(Icons.plumbing,"Plumbing"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyPlumber())
+                  );
+                }),
+                IconButton( icon: _gridItem(Icons.cleaning_services,"Cleaning"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyClean())
+                  );
+                }),
+                IconButton( icon: _gridItem(Icons.electrical_services,"Electricity"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyElectricity())
+                  );
+                }),
+                IconButton( icon: _gridItem(Icons.brush_sharp,"Parlor"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyPlumber())
+                  );
+                }),
+                IconButton( icon: _gridItem(Icons.car_repair,"Mechanic"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyPlumber())
+                  );
+                }),
+                IconButton( icon: _gridItem(Icons.format_paint_rounded,"Paint"),
+                        onPressed: (){
+                     Navigator.push(
+                    context,MaterialPageRoute(builder: (context)=>const MyPlumber())
+                  );
+                })
+                ],)
           ),
+         
+            
+          //..
+          
+
+          
+          
          const Padding(padding: EdgeInsets.all(16.0),
           child: Row(
             children: <Widget>[
@@ -317,6 +338,7 @@ Text(subtitle, style: const TextStyle(
     ),
     );
   }
+  //bottom
   _cardItem(image)
   {
     return Padding(padding:const EdgeInsets.all(16.0),
@@ -325,7 +347,7 @@ Text(subtitle, style: const TextStyle(
         width: 100.0,
         height: 100.0,
         decoration:const  BoxDecoration(
-          image: DecorationImage(image:const AssetImage("assets/carp.jpg",))
+          image: DecorationImage(image:NetworkImage('assets/carp.jpg',))
         ),
         
       ),
@@ -376,6 +398,7 @@ Text(subtitle, style: const TextStyle(
       ],
     );
   }
+//top
   _top(){
     
     return Container(
@@ -393,13 +416,15 @@ child:  Column(children: <Widget>[
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
  const  Row(children: <Widget>[
+  
     CircleAvatar(
-      backgroundImage: AssetImage("assets/profile.jpg")
+      backgroundImage: AssetImage("assets/profile.jpg"),
     
     ),
     SizedBox(
     width: 20.0,
     ),
+    
     
     Text("HI!! WELCOME ",style: TextStyle(color: Colors.white),),
   ],),

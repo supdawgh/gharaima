@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:gm/otp.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class _MyRegisterState extends State<MyRegister> {
   
 
   Future<void> sendOtp() async {
-    var url = Uri.parse('http://172.16.7.116:5000/api/V1/system/sendOtp');
+    var url = Uri.parse('http://192.168.1.68:5000/api/V1/system/sendOtp');
     var registerBody = {
       "phoneNumber":widget.contactNo
     };   
@@ -222,7 +223,8 @@ class _MyRegisterState extends State<MyRegister> {
                               color: Colors.black,
                           ),)),
                   ],
-                ),],)
+                ),
+                ],)
               )
             )
             ]
