@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-=======
-import 'dart:convert';
 // ignore: unused_import, avoid_web_libraries_in_flutter
-import 'dart:html';
 
->>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
