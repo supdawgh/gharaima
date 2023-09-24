@@ -3,6 +3,7 @@ import 'package:gm/cleaning.dart';
 import 'package:gm/electricity.dart';
 import 'package:gm/plumbing.dart';
 //import 'package:gm/plumbing.dart';
+import 'package:gm/globals.dart';
 import 'package:pinput/pinput.dart';
 
 import 'dart:convert';
@@ -14,12 +15,13 @@ class MyOtp extends StatefulWidget {
   final String lastName;
 
   
-  final int contactNo;
+  final String contactNo;
   final String address;
   final String password;
+  final bool isLoading;
   
-  
-  const MyOtp({super.key , required this.firstName, required this.lastName, required this.contactNo, required this.address, required this.password});
+  const MyOtp({super.key , required this.firstName, required this.lastName, required this.contactNo, required this.address, required this.password,required this.isLoading});
+
 /*  Widget _selectedCleaning({
 required Color color,
 required String title,
@@ -68,7 +70,7 @@ class _MyOtpState extends State<MyOtp> {
   }
   bool userRegistered=false;
   Future<void> validateOtp() async {
-    var url = Uri.parse('http://192.168.1.68:5000/api/V1/system/validateOtp');
+    var url = Uri.parse('http://$ip:5000/api/V1/system/validateOtp');
     var registerBody = {
       "phoneNumber":widget.contactNo,
       "userOtp":phoneOtp
@@ -92,7 +94,7 @@ class _MyOtpState extends State<MyOtp> {
   }
 
   Future<void> registerUser() async {
-    var url = Uri.parse('http://172.16.7.116:5000/api/V1/users/register');
+    var url = Uri.parse('http://$ip:5000/api/V1/users/register');
     var registerBody = {
       "firstName":widget.firstName,
       "lastName":widget.lastName,
@@ -130,7 +132,8 @@ class _MyOtpState extends State<MyOtp> {
       ),
       backgroundColor: const Color.fromRGBO(223,223,223, 10),
       body: Center(
-      child: Container(
+        child:widget.isLoading?
+        Text('is loading') : Container(
         margin: const EdgeInsets.only(left: 25,right: 25),
         alignment: Alignment.center,
         

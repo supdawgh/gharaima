@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gm/otp.dart';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
 
 class MyLogin extends StatefulWidget {
   const MyLogin(
@@ -21,6 +22,23 @@ class MyLogin extends StatefulWidget {
   final String contactNo;
   final String address;
   final String password;
+=======
+import 'package:flutter/material.dart';
+import 'package:gm/globals.dart';
+import 'package:flutter/material.dart';
+import 'package:gm/otp.dart';
+
+
+class MyLogin extends StatefulWidget {
+  const MyLogin({Key? key, required this.firstName, required this.lastName, required this.contactNo, required this.address, required this.password}) : super(key: key);
+  
+   final String firstName;
+   final String lastName;
+   final String contactNo;
+   final String address;
+   final String password;
+   final bool isLoading=false;
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
 
   @override
   State<MyLogin> createState() => _MyLoginState();
@@ -32,8 +50,16 @@ class _MyLoginState extends State<MyLogin> {
 
   Future<void> loginUser() async {
     print("I have been called");
+<<<<<<< HEAD
     var url = Uri.parse('http://172.16.7.116:5000/api/V1/users/login');
     var registerBody = {"phoneNumber": phoneNumber, "password": password};
+=======
+    var url = Uri.parse('http://$ip:5000/api/V1/users/login');
+    var registerBody = {
+      "phoneNumber":phoneNumber,
+      "password":password
+    };   
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
     try {
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
@@ -217,6 +243,7 @@ class _MyLoginState extends State<MyLogin> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
+<<<<<<< HEAD
                                   MaterialPageRoute(
                                       builder: (context) => ForgotPass(
                                           firstName: widget.firstName,
@@ -224,6 +251,14 @@ class _MyLoginState extends State<MyLogin> {
                                           contactNo: widget.contactNo,
                                           address: widget.address,
                                           password: widget.password)),
+=======
+                                  MaterialPageRoute(builder: (context) => ForgotPass(firstName: widget.firstName,
+                                      lastName:widget.lastName,
+                                      contactNo:widget.contactNo,
+                                      address:widget.address,
+                                      password:widget.password,
+                                      )),
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
                                 );
                               },
                               child: const Text(
@@ -249,6 +284,7 @@ class _MyLoginState extends State<MyLogin> {
 
 //ForGotPassWord
 class ForgotPass extends StatefulWidget {
+<<<<<<< HEAD
   const ForgotPass(
       {super.key,
       required this.firstName,
@@ -261,6 +297,16 @@ class ForgotPass extends StatefulWidget {
   final String contactNo;
   final String address;
   final String password;
+=======
+  const ForgotPass({super.key, required this.firstName, required this.lastName, required this.contactNo, required this.address, required this.password});
+  final String  firstName;
+  final String  lastName;
+  final String  contactNo;
+  final String  address;
+  final String  password;
+  final bool isLoading=false;
+
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
 
   @override
   State<ForgotPass> createState() => _ForgotPassState();
@@ -273,8 +319,16 @@ class _ForgotPassState extends State<ForgotPass> {
   // ignore: non_constant_identifier_names
   Future<void> ForgotPass() async {
     print("I have been called");
+<<<<<<< HEAD
     var url = Uri.parse('http://192.168.1.68:5000/api/V1/users/login');
     var registerBody = {"phoneNumber": phoneNumber, "password": password};
+=======
+    var url = Uri.parse('http://$ip:5000/api/V1/users/login');
+    var registerBody = {
+      "phoneNumber":phoneNumber,
+      "password":password
+    };   
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
     try {
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
@@ -328,6 +382,7 @@ class _ForgotPassState extends State<ForgotPass> {
                   )
                 ],
               ),
+<<<<<<< HEAD
             ),
             Container(
               padding: EdgeInsets.only(
@@ -407,6 +462,44 @@ class _ForgotPassState extends State<ForgotPass> {
               ),
             ),
             /*const SizedBox(
+=======
+              ElevatedButton(onPressed:(){
+                print('button clicked');
+                ForgotPass();
+                 Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyOtp(
+                                      firstName: widget.firstName,
+                                      lastName:widget.lastName,
+                                      contactNo:widget.contactNo,
+                                      address:widget.address,
+                                      password:widget.password,
+                                      isLoading:widget.isLoading,
+                                    )),
+                              );
+                {
+                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>  const MyOtp(firstName: '', lastName: '', contactNo: '', address: '', password: '',isLoading: true,)),
+                              );
+                }
+              },
+              
+              // ignore: sort_child_properties_last
+              child: const Text('Confirm'),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(25, 135, 84, 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(7)
+              )),
+              )]
+                  ),),),
+                  
+                 
+                  
+     ),
+      /*const SizedBox(
+>>>>>>> 9ab1bf284f639788b2de86f5dacb2244aa24045e
                         height: 40,
                       ),
                       Row(
