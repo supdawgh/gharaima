@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:gm/otp.dart';
+import 'package:gm/workerdash.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:gm/globals.dart';
 
 class MyRegister extends StatefulWidget {
   String firstName;
   String lastName;
-  int contactNo;
+  String contactNo;
   String address;
   String password;
+  bool isLoading=false;
 
   MyRegister({Key? key , required this.firstName, required this.lastName, required this.contactNo, required this.address, required this.password}) : super(key: key);
   
@@ -20,10 +23,13 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
-  
 
   Future<void> sendOtp() async {
-    var url = Uri.parse('http://192.168.1.68:5000/api/V1/system/sendOtp');
+    setState(() {
+      widget.isLoading =true;
+    });
+    
+    var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
     var registerBody = {
       "phoneNumber":widget.contactNo
     };   
@@ -35,6 +41,7 @@ class _MyRegisterState extends State<MyRegister> {
       print(response); 
       if (response.statusCode == 201) {
         print('POST request succeesful');
+        widget.isLoading=false;
         print(response);
       } else {
         print("Else part");
@@ -123,7 +130,7 @@ class _MyRegisterState extends State<MyRegister> {
                   children: [
                     TextField(
                       onChanged: (value) {
-                       widget.contactNo = int.parse(value);
+                       widget.contactNo = value;
                       },
                       //obscureText: true,
                       decoration: InputDecoration(
@@ -195,7 +202,8 @@ class _MyRegisterState extends State<MyRegister> {
                                       lastName:widget.lastName,
                                       contactNo:widget.contactNo,
                                       address:widget.address,
-                                      password:widget.password
+                                      password:widget.password,
+                                      isLoading: widget.isLoading,
                                     )),
                               );
                             }, 
@@ -401,13 +409,16 @@ class _MyWorkerState extends State<MyWorker> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MyOtp(firstName: '', lastName: '', contactNo: 0, address: '', password: ''
+                                    /*builder: (context) => const MyOtp(firstName: '', lastName: '', contactNo: '', address: '', password: '', isLoading: true,
                                       //firstName: widget.firstName,
                                      // lastName:widget.lastName,
                                      // contactNo:widget.contactNo,
                                      // address:widget.address,
                                      // password:widget.password
-                                    )),
+                                    )),*/
+                                    ///////////ahile ko lagi
+                                  builder: (context)=> const MyWorkerDash(),
+                                )
                               );
                             }, 
                             icon: const Icon(Icons.arrow_forward),

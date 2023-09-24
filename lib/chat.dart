@@ -86,10 +86,11 @@ class Body extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(child: Container(
+            Expanded(child:
+             Container(
               alignment: Alignment.topLeft,
-
-              
+              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.all(10.0),              
               child: Container(
                 padding: EdgeInsets.all(12.0),
                 margin: EdgeInsets.all(12.0),
@@ -98,13 +99,15 @@ class Body extends StatelessWidget {
                   borderRadius:BorderRadius.circular(17.0),),
                 child: Text('Left message',style: TextStyle(color: Colors.white),),
               ),
-            )),
+            )
+            ),
            ],
          )
         ),  
-        SizedBox(height: 7.0,),
          Expanded(child: Container(
               alignment: Alignment.topRight,
+              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.all(10.0),
               child: Container(
                 padding: EdgeInsets.all(12.0),
                 margin: EdgeInsets.all(12.0),

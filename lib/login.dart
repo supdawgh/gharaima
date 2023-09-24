@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:gm/otp.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-
+import 'package:gm/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:gm/otp.dart';
 
@@ -18,6 +18,7 @@ class MyLogin extends StatefulWidget {
    final String contactNo;
    final String address;
    final String password;
+   final bool isLoading=false;
 
   @override
   State<MyLogin> createState() => _MyLoginState();
@@ -30,7 +31,7 @@ class _MyLoginState extends State<MyLogin> {
  
   Future<void> loginUser() async {
     print("I have been called");
-    var url = Uri.parse('http://172.16.7.116:5000/api/V1/users/login');
+    var url = Uri.parse('http://$ip:5000/api/V1/users/login');
     var registerBody = {
       "phoneNumber":phoneNumber,
       "password":password
@@ -214,7 +215,8 @@ class _MyLoginState extends State<MyLogin> {
                                       lastName:widget.lastName,
                                       contactNo:widget.contactNo,
                                       address:widget.address,
-                                      password:widget.password)),
+                                      password:widget.password,
+                                      )),
                                 );
                              
                           },
@@ -247,6 +249,7 @@ class ForgotPass extends StatefulWidget {
   final String  contactNo;
   final String  address;
   final String  password;
+  final bool isLoading=false;
 
 
   @override
@@ -259,7 +262,7 @@ class _ForgotPassState extends State<ForgotPass> {
    // ignore: non_constant_identifier_names
    Future<void> ForgotPass() async {
     print("I have been called");
-    var url = Uri.parse('http://192.168.1.68:5000/api/V1/users/login');
+    var url = Uri.parse('http://$ip:5000/api/V1/users/login');
     var registerBody = {
       "phoneNumber":phoneNumber,
       "password":password
@@ -364,15 +367,16 @@ child: Scaffold(
                                     builder: (context) => MyOtp(
                                       firstName: widget.firstName,
                                       lastName:widget.lastName,
-                                      contactNo:0,
+                                      contactNo:widget.contactNo,
                                       address:widget.address,
-                                      password:widget.password
+                                      password:widget.password,
+                                      isLoading:widget.isLoading,
                                     )),
                               );
                 {
                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) =>  const MyOtp(firstName: '', lastName: '', contactNo: 0, address: '', password: '')),
+                                  MaterialPageRoute(builder: (context) =>  const MyOtp(firstName: '', lastName: '', contactNo: '', address: '', password: '',isLoading: true,)),
                               );
                 }
               },
