@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'package:gm/globals.dart';
+import 'dart:convert';
 
 class MyPlumber extends StatefulWidget {
   const MyPlumber({super.key});
@@ -12,24 +15,38 @@ class MyPlumber extends StatefulWidget {
 
 class _MyPlumberState extends State<MyPlumber> {
   List<dynamic> users = [];
-  List names = [
-    ' Daniel Ceaser',
-    ' Taylor Jad',
-    ' Chiru Paji',
-    ' Samy Tamy',
-    ' Hero Lal',
-    ' Landon Mcbroom',
-    ' Cole Spouse'
-  ];
-  List locations = [
-    '  London',
-    '  Usa',
-    '  Usa',
-    '  Kohalpur',
-    '  Humla',
-    '  Jumla',
-    '  Hngk'
-  ];
+   List<Map<String,dynamic>> data=[];
+  @override
+  void initState()
+  {
+    super.initState();
+    getCleaners().then((result) {
+      setState(() {
+        data=result;
+      });
+    });
+  }
+  Future<List<Map<String, dynamic>>> getCleaners() async {
+    print("I have been called");
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/category?category=plumber');
+    try {
+      var response = await http.get(url);
+          
+      print(response);
+      if (response.statusCode == 200) {
+        final List<dynamic> data= jsonDecode(response.body)['workers'];
+        List<Map<String,dynamic>>result=List<Map<String,dynamic>>.from(data);
+        return result;
+       } else {
+       throw Exception('Failed to load data');
+        
+      }
+    } catch (err) {
+      throw Exception('Failed to load data');
+
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,26 +55,7 @@ class _MyPlumberState extends State<MyPlumber> {
           elevation: 0,
         ),
 
-        /*floatingActionButton: FloatingActionButton(onPressed: fetchUsers),
-        body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context,index){
-        final user = users[index];
-        final fname= user ['name']['first'];
-        final lname =user ['name']['last'];
-        final fullname = fname+ " " +lname;
-        final email =user ['email'];
-        final imageUrl =user ['picture']['thumbnail'];
-         return ListTile(
-            leading:ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.network(imageUrl),
-            ),
-           
-            title:Text(fullname),
-            subtitle: Text(email),
-          );
-         },),*/
+   
         body: ListView(children: <Widget>[
           //  _top(),
           const SizedBox(
@@ -94,9 +92,11 @@ class _MyPlumberState extends State<MyPlumber> {
                 ],
               )),
           ListView.builder(
-            itemCount: 7,
+            itemCount: data.length,
             shrinkWrap: true,
-            itemBuilder: (context, int index) => Container(
+            itemBuilder: (context, int index){ 
+              final item =data[index];
+              return Container(
                 width: MediaQuery.of(context).size.width,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
@@ -131,12 +131,20 @@ class _MyPlumberState extends State<MyPlumber> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(names[index],
+                                  Row(
+                                    children:[
+                                  Text(item['firstName'],
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.bold)),
-                                  Text(locations[index],
+                                       const SizedBox(width: 5.0,),
+                                  Text(item['lastName'],
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold))]),
+                                  Text(item['address'],
                                       style:
                                           const TextStyle(color: Colors.grey)),
                                   RatingBar.builder(
@@ -176,7 +184,9 @@ class _MyPlumberState extends State<MyPlumber> {
                           ),
                         ],
                       )),
-                )),
+                )
+              );
+            }
           ),
           /* _cardItem(1),
           _cardItem(2),

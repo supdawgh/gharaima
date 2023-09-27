@@ -30,13 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_rating_bar: ^4.0.1
+  #flutter_rating_bar: ^4.0.1
   http: ^1.1.0
   pinput: ^3.0.1
-cupertino_icons: ^1.0.6
-http: ^1.1.0
-pinput: ^3.0.1
-flutter_rating_bar: ^4.0.1
+  cupertino_icons: ^1.0.6
+  #http: ^1.1.0
+  #pinput: ^3.0.1
+  flutter_rating_bar: ^4.0.1
+  khalti_flutter: ^3.0.0
+  form_validator: ^2.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'package:gm/globals.dart';
+import 'dart:convert';
 
 class MyElectricity extends StatefulWidget {
   const MyElectricity({super.key});
@@ -9,24 +12,39 @@ class MyElectricity extends StatefulWidget {
 }
 
 class _MyElectricityState extends State<MyElectricity> {
-  List names = [
-    ' Hari Bahadur',
-    ' Jad Talyor',
-    ' Kasi Shrestha ',
-    ' Futle Singh',
-    ' Hero Lal',
-    ' Landon Mcbroom',
-    ' Cole Spouse'
-  ];
-  List locations = [
-    '  Pokhara',
-    '  Sankhamul',
-    '  premiun',
-    '  kohalpur',
-    '  humla',
-    '  jumla',
-    '  hngk'
-  ];
+    List<dynamic> users = [];
+
+   List<Map<String,dynamic>> data=[];
+  @override
+  void initState()
+  {
+    super.initState();
+    getCleaners().then((result) {
+      setState(() {
+        data=result;
+      });
+    });
+  }
+  Future<List<Map<String, dynamic>>> getCleaners() async {
+    print("I have been called");
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/category?category=electrician');
+    try {
+      var response = await http.get(url);
+          
+      print(response);
+      if (response.statusCode == 200) {
+        final List<dynamic> data= jsonDecode(response.body)['workers'];
+        List<Map<String,dynamic>>result=List<Map<String,dynamic>>.from(data);
+        return result;
+       } else {
+       throw Exception('Failed to load data');
+        
+      }
+    } catch (err) {
+      throw Exception('Failed to load data');
+
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,9 +88,11 @@ class _MyElectricityState extends State<MyElectricity> {
                 ],
               )),
           ListView.builder(
-            itemCount: 7,
+            itemCount: data.length,
             shrinkWrap: true,
-            itemBuilder: (context, int index) => Container(
+            itemBuilder: (context, int index) {
+              final item=data[index];
+              return Container(
                 width: MediaQuery.of(context).size.width,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
@@ -107,12 +127,20 @@ class _MyElectricityState extends State<MyElectricity> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(names[index],
+                                  Row(
+                                    children:[
+                                  Text(item['firstName'],
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.bold)),
-                                  Text(locations[index],
+                                  SizedBox(width: 5.0,),
+                                  Text(item['lastName'],
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold))]),
+                                  Text(item['address'],
                                       style:
                                           const TextStyle(color: Colors.grey)),
                                   RatingBar.builder(
@@ -152,9 +180,13 @@ class _MyElectricityState extends State<MyElectricity> {
                           ),
                         ],
                       )),
-                )),
+                )
+              );
+            }
           ),
-        ]));
+        ]
+      )
+    );
   }
 }
 /*body: ListView.builder(

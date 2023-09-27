@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gm/globals.dart';
+import 'package:gm/login.dart';
 import 'package:gm/otp.dart';
 import 'package:gm/workerdash.dart';
 // ignore: depend_on_referenced_packages
@@ -13,7 +16,6 @@ class MyRegister extends StatefulWidget {
   String contactNo;
   String address;
   String password;
-  bool isLoading = false;
 
   MyRegister(
       {Key? key,
@@ -22,42 +24,40 @@ class MyRegister extends StatefulWidget {
       required this.contactNo,
       required this.address,
       required this.password})
-      : super(key: key);
+      : super(
+          key: key,
+        );
 
   @override
   State<MyRegister> createState() => _MyRegisterState();
 }
 
 class _MyRegisterState extends State<MyRegister> {
-  Future<void> sendOtp() async {
-    setState(() {
-      widget.isLoading = true;
-    });
-
+  
+  Future<http.Response> sendOtp() async {
     var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
     var registerBody = {"phoneNumber": widget.contactNo};
-    print(registerBody);
     try {
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(registerBody));
-      print(response);
-      if (response.statusCode == 201) {
-        print('POST request succeesful');
-        widget.isLoading = false;
-        print(response);
-      } else {
-        print("Else part");
-        print(response.body);
-      }
+      return response;
     } catch (err) {
       print("Inside catch part");
       print(err);
+      // You might want to handle the error here or rethrow it.
+      throw err;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final _firstnameController = TextEditingController();
+    final _lastnamecontroller = TextEditingController();
+    final _phonenumberController = TextEditingController();
+    final _addressController = TextEditingController();
+    final _passwordController = TextEditingController();
+
     return Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -79,14 +79,15 @@ class _MyRegisterState extends State<MyRegister> {
               ),
               Container(
                 padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.30,
+                    top: MediaQuery.of(context).size.height * 0.22,
                     right: 50,
                     left: 50),
                 child: Column(children: [
                   Row(
                     children: <Widget>[
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                          controller: _firstnameController,
                           onChanged: (value) {
                             widget.firstName = value;
                           },
@@ -97,13 +98,21 @@ class _MyRegisterState extends State<MyRegister> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               )),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Required";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                       ),
                       const SizedBox(
                         width: 10,
                       ),
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                          controller: _lastnamecontroller,
                           onChanged: (value) {
                             widget.lastName = value;
                           },
@@ -114,6 +123,13 @@ class _MyRegisterState extends State<MyRegister> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               )),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Required";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                       ),
                     ],
@@ -125,13 +141,14 @@ class _MyRegisterState extends State<MyRegister> {
               ),
               Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.40,
+                      top: MediaQuery.of(context).size.height * 0.33,
                       right: 50,
                       left: 50),
                   child: Center(
                       child: Column(
                     children: [
-                      TextField(
+                      TextFormField(
+                        controller: _phonenumberController,
                         onChanged: (value) {
                           widget.contactNo = value;
                         },
@@ -144,15 +161,22 @@ class _MyRegisterState extends State<MyRegister> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      TextField(
+                      TextFormField(
+                        controller: _addressController,
                         onChanged: (value) {
                           widget.address = value;
                         },
-                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Address',
                           fillColor: Colors.grey[217],
@@ -161,11 +185,19 @@ class _MyRegisterState extends State<MyRegister> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      TextField(
+                      TextFormField(
+                        controller: _passwordController,
                         onChanged: (value) {
                           print("I am changing");
                           widget.password = value;
@@ -179,6 +211,13 @@ class _MyRegisterState extends State<MyRegister> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
                         height: 30,
@@ -194,98 +233,61 @@ class _MyRegisterState extends State<MyRegister> {
                               backgroundColor: Colors.black87,
                               child: IconButton(
                                 color: Colors.grey,
-                                onPressed: () {
-                                  print('button Clicked');
-                                  sendOtp();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyOtp(
-                                              firstName: widget.firstName,
-                                              lastName: widget.lastName,
-                                              contactNo: widget.contactNo,
-                                              address: widget.address,
-                                              password: widget.password,
-                                              isLoading: widget.isLoading,
-                                            )),
-                                  );
+                                onPressed: () async {
+                                  _firstnameController.text;
+                                  _lastnamecontroller.text;
+                                  _phonenumberController.text;
+                                  _addressController.text;
+                                  print('firstname');
+
+                                  if (widget.firstName.isNotEmpty &&
+                                      widget.lastName.isNotEmpty &&
+                                      widget.contactNo.isNotEmpty &&
+                                      widget.address.isNotEmpty &&
+                                      widget.password.isNotEmpty) {
+                                    print('button Clicked');
+
+                                    var response= await sendOtp();
+                                    print(response.body);
+                                    if (response.statusCode ==200){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyOtp(
+                                                firstName: widget.firstName,
+                                                lastName: widget.lastName,
+                                                contactNo: widget.contactNo,
+                                                address: widget.address,
+                                                password: widget.password,
+                                              )
+                                          ),
+                                    );
+                                  }else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Invalid data entry !'),
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
+                                         }
+                                          else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text(
+                                          'All fields are required. Please fill them up.'),
+                                      duration: Duration(seconds: 3),
+                                    ));
+                                  }
                                 },
                                 icon: const Icon(Icons.arrow_forward),
                               ),
                             ),
                           ]),
                       const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        onChanged: (value) {
-                          widget.address = value;
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Address',
-                          fillColor: Colors.grey[217],
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        onChanged: (value) {
-                          print("I am changing");
-                          widget.password = value;
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          fillColor: Colors.grey[217],
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Sign Up',
-                              style: TextStyle(
-                                  fontSize: 21, fontWeight: FontWeight.w700)),
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.black87,
-                            child: IconButton(
-                              color: Colors.grey,
-                              onPressed: () {
-                                print('button Clicked');
-                                sendOtp();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyOtp(
-                                            firstName: widget.firstName,
-                                            lastName: widget.lastName,
-                                            contactNo: widget.contactNo,
-                                            address: widget.address,
-                                            password: widget.password,
-                                            isLoading: widget.isLoading,
-                                          )),
-                                );
-                              },
-                              icon: const Icon(Icons.arrow_forward),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
+                        height: 1,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -295,8 +297,14 @@ class _MyRegisterState extends State<MyRegister> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyWorker()));
+                                        builder: (context) => MyWorker(
+                                              firstName: '',
+                                              lastName: '',
+                                              contactNo: '',
+                                              address: '',
+                                              field: '',
+                                              password: '',
+                                            )));
                               },
                               child: const Text(
                                 'Use as Worker',
@@ -316,13 +324,44 @@ class _MyRegisterState extends State<MyRegister> {
 
 //WORKER
 class MyWorker extends StatefulWidget {
-  const MyWorker({super.key});
+  String firstName;
+  String lastName;
+  String contactNo;
+  String address;
+  String field;
+  String password;
+
+  MyWorker(
+      {super.key,
+      required this.firstName,
+      required this.lastName,
+      required this.contactNo,
+      required this.address,
+      required this.field,
+      required this.password});
 
   @override
   State<MyWorker> createState() => _MyWorkerState();
 }
 
 class _MyWorkerState extends State<MyWorker> {
+   Future<http.Response> sendOtp() async {
+    print("I have been called");
+    var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
+    var registerBody = {"phoneNumber": widget.contactNo};
+    try {
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(registerBody));
+      return response;
+    } catch (err) {
+      print("Inside catch part");
+      print(err);
+      // You might want to handle the error here or rethrow it.
+      throw err;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -346,7 +385,7 @@ class _MyWorkerState extends State<MyWorker> {
             ),
             Container(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.25,
+                  top: MediaQuery.of(context).size.height * 0.22,
                   right: 50,
                   left: 50),
               child: Column(children: [
@@ -355,7 +394,7 @@ class _MyWorkerState extends State<MyWorker> {
                     Expanded(
                       child: TextFormField(
                         onChanged: (value) {
-                          // widget.firstName= value;
+                          widget.firstName = value;
                         },
                         decoration: InputDecoration(
                             fillColor: Colors.grey[217],
@@ -364,15 +403,22 @@ class _MyWorkerState extends State<MyWorker> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             )),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
-                      child: TextField(
+                      child: TextFormField(
                         onChanged: (value) {
-                          // widget.lastName = value;
+                          widget.lastName = value;
                         },
                         decoration: InputDecoration(
                             fillColor: Colors.grey[217],
@@ -381,69 +427,31 @@ class _MyWorkerState extends State<MyWorker> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             )),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01,
-                        right: 5,
-                        left: 5),
-                    child: Center(
-                        child: Column(
-                      children: [
-                        TextField(
-                          onChanged: (value) {
-                            // widget.contactNo = int.parse(value);
-                          },
-                          //obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: 'Contact no.',
-                            fillColor: Colors.grey[217],
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) {
-                              // widget.lastName = value;
-                            },
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey[217],
-                                filled: true,
-                                hintText: "Last Name",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                          ),
-                        ),
-                      ],
-                    ))),
-                const SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
+                      top: MediaQuery.of(context).size.height * 0.001,
                       right: 5,
                       left: 5),
                   child: Center(
                     child: Column(children: [
-                      TextField(
+                      TextFormField(
                         onChanged: (value) {
-                          // widget.contactNo = int.parse(value);
+                          widget.contactNo = int.parse(value) as String;
                         },
-                        //obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Contact no.',
                           fillColor: Colors.grey[217],
@@ -452,15 +460,21 @@ class _MyWorkerState extends State<MyWorker> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 5,
                       ),
-                      TextField(
+                      TextFormField(
                         onChanged: (value) {
-                          // widget.address = value;
+                          widget.address = value;
                         },
-                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Address',
                           fillColor: Colors.grey[217],
@@ -469,15 +483,22 @@ class _MyWorkerState extends State<MyWorker> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 5,
                       ),
-                      TextField(
+                      TextFormField(
                         onChanged: (value) {
-                          // widget.address = value;
+                          widget.field = value;
                         },
-                        obscureText: true,
+                        // obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Field',
                           fillColor: Colors.grey[217],
@@ -486,14 +507,21 @@ class _MyWorkerState extends State<MyWorker> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 5,
                       ),
-                      TextField(
+                      TextFormField(
                         onChanged: (value) {
                           print("I am changing");
-                          // widget.password = value;
+                          widget.password = value;
                         },
                         obscureText: true,
                         decoration: InputDecoration(
@@ -504,9 +532,16 @@ class _MyWorkerState extends State<MyWorker> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Required";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -519,102 +554,54 @@ class _MyWorkerState extends State<MyWorker> {
                               backgroundColor: Colors.black87,
                               child: IconButton(
                                 color: Colors.grey,
-                                onPressed: () {
-                                  print('button Clicked');
-                                  // sendOtp();
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        /*builder: (context) => const MyOtp(firstName: '', lastName: '', contactNo: '', address: '', password: '', isLoading: true,
-                                      //firstName: widget.firstName,
-                                     // lastName:widget.lastName,
-                                     // contactNo:widget.contactNo,
-                                     // address:widget.address,
-                                     // password:widget.password
-                                    )),*/
-                                        ///////////ahile ko lagi
-                                        builder: (context) =>
-                                            const MyWorkerDash(),
-                                      ));
+                                onPressed: () async {
+                                  if (widget.firstName.isNotEmpty &&
+                                      widget.lastName.isNotEmpty &&
+                                      widget.contactNo.isNotEmpty &&
+                                      widget.address.isNotEmpty &&
+                                      widget.field.isNotEmpty) {
+                                    print('button Clicked');
+                                  var response = await  sendOtp();
+                                  if (response.statusCode==200){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MyOtp2(
+                                                  firstName: widget.firstName,
+                                                  lastName: widget.lastName,
+                                                  contactNo: widget.contactNo,
+                                                  address: widget.address,
+                                                  field: widget.field,
+                                                  password: widget.password,
+                                                )
+                                          )
+                                      );
+                                  }
+                                  else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Invalid data entry !'),
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                  else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'All Fields are Required. Please Fill Them Up!'),
+                                        duration: Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
                                 },
                                 icon: const Icon(Icons.arrow_forward),
                               ),
                             ),
                           ]),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        onChanged: (value) {
-                          // widget.address = value;
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Field',
-                          fillColor: Colors.grey[217],
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        onChanged: (value) {
-                          print("I am changing");
-                          // widget.password = value;
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          fillColor: Colors.grey[217],
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Sign Up',
-                              style: TextStyle(
-                                  fontSize: 21, fontWeight: FontWeight.w700)),
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.black87,
-                            child: IconButton(
-                              color: Colors.grey,
-                              onPressed: () {
-                                print('button Clicked');
-                                // sendOtp();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyOtp(
-                                            firstName: '',
-                                            lastName: '',
-                                            contactNo: '',
-                                            address: '',
-                                            password: '', isLoading: false,
-                                            //firstName: widget.firstName,
-                                            // lastName:widget.lastName,
-                                            // contactNo:widget.contactNo,
-                                            // address:widget.address,
-                                            // password:widget.password
-                                          )),
-                                );
-                              },
-                              icon: const Icon(Icons.arrow_forward),
-                            ),
-                          )
-                        ],
-                      ),
                     ]),
                   ),
                 )

@@ -4,11 +4,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:gm/chat.dart';
 import 'package:gm/cleaning.dart';
+import 'package:gm/explain.dart';
+import 'package:http/http.dart' as http;
+import 'package:gm/globals.dart';
+import 'dart:convert';
 
-class MyProfile extends StatelessWidget {
-  const MyProfile({super.key});
-
+class MyProfile extends StatefulWidget {
+  final String id;
+  const MyProfile({super.key,required this.id});
   @override
+  State<MyProfile> createState() => _MyProfileState();
+}
+  class _MyProfileState extends State<MyProfile> {
+    
+    Future <Map<String, dynamic>> getProfile() async {
+    var id=widget.id;
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/$id');
+    try {
+      var response = await http.get(url);
+          
+      print(response.body);
+      if (response.statusCode == 200) {
+        final Map<String,dynamic> data= jsonDecode(response.body);
+        return data['indvWorker'];
+       
+       } else {
+       throw Exception('Failed to load data');
+        
+      }
+    } catch (err) {
+      throw Exception('Failed to load data');
+
+    }
+  }
+   Map<String,dynamic> data ={};
+  @override
+  void initState(){
+    super.initState();
+    getProfile().then((result) {
+      setState(() {
+        data = result;
+      });
+    });
+  }
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -23,59 +61,74 @@ class MyProfile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'YOU HAVE HIRED',
+                    'YOU ARE ABOUT TO HIRE',
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
                   ),
                   SizedBox(height: 30.0),
                   CircleAvatar(
                     radius: 60.0,
-                    backgroundImage: AssetImage('assets/dan.jpg'),
+                    //backgroundImage: AssetImage('assets/dan.jpg'),
                   ),
                   SizedBox(
                     height: 25.0,
                   ),
+                  Row( 
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:[
+                  SizedBox(
+                    height: 25.0,
+                  ),
                   Text(
-                    'Hari Bahadur',
+                    data['firstName'],
                     style:
                         TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
+                  width: 5.0,
+                  ),
+                  Text(
+                    data['lastName'],
+                    style:
+                        TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                  ),],),
+                  SizedBox(
                     height: 13.0,
                   ),
                   Text(
-                    'London',
+                    data['address'],
                     style:
                         TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 30.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Ratings & Reviews:',
-                                  style: TextStyle(
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Text(
-                                '4.7',
-                                style: TextStyle(
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              RatingBar.builder(
-                                initialRating: 3,
+                  if (data.containsKey('review')&& data['review']is List)
+                  SizedBox(height: 17.0,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Review',
+                       style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),),
+                     SizedBox(height: 20.0,),
+
+                     for (var review in data['review'])
+
+                     Container(
+                      margin: EdgeInsets.only(top:20.0),
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      color: const Color.fromARGB(255, 214, 213, 213),
+
+                     child:
+                      Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                         RatingBar.builder(
+                                initialRating: double.parse(review['rating'].toString()),
                                 minRating: 1,
                                 maxRating: 5,
                                 itemSize: 20.0,
@@ -90,26 +143,17 @@ class MyProfile extends StatelessWidget {
                                   print(rating);
                                 },
                               ),
-                              SizedBox(height: 10.0),
-                              Container(
-                                width: 400.0,
-                                height: 100.0,
-                                color: const Color.fromARGB(255, 214, 213, 213),
-                                child: Container(
-                                  margin: EdgeInsets.all(10.0),
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: const <Widget>[
-                                        Text('so far so good'),
-                                      ]),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 40.0,
+                              SizedBox(height: 10.0,),
+                        Text('Review: ${review['message']}'),
+                        Divider(),
+                      ],
+                    ),)
+
+                    ],
+
+                  ),
+                           SizedBox(
+                              height: 40.0,
                               ),
                               Column(
                                 children: [
@@ -122,7 +166,9 @@ class MyProfile extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MyClean()));
+                                                       MyClean(
+                                                        id:''
+                                                      )));
                                         },
                                         child: const Text('Unhire'),
                                         style: ElevatedButton.styleFrom(
@@ -142,9 +188,9 @@ class MyProfile extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MyChat()));
+                                                      const MyExplain()));
                                         },
-                                        child: const Text('Chat'),
+                                        child: const Text('Hire'),
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 const Color.fromRGBO(
@@ -158,13 +204,10 @@ class MyProfile extends StatelessWidget {
                                 ],
                               )
                             ],
-                          )
-                        ]),
-                  )
-                ],
-              ),
-            )
-          ],
-        ));
+                          ))
+                        ]
+        ) 
+                  );
+              
   }
 }

@@ -1,15 +1,40 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+//http://192.168.1.75:5000/api/V1/worker/number/9808185333
 
 import 'package:flutter/material.dart';
+import 'package:gm/globals.dart';
+import 'package:http/http.dart' as http;
+
 
 class MyWorkerDash extends StatefulWidget {
-  const MyWorkerDash({super.key});
+  String contactNo;
+   MyWorkerDash({super.key,required this.contactNo});
 
   @override
   State<MyWorkerDash> createState() => _MyWorkerDashState();
 }
 
 class _MyWorkerDashState extends State<MyWorkerDash> {
+  Future<void> sendOtp() async {
+
+    var contactNo=widget.contactNo;
+    print(contactNo);
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/number/$contactNo');
+    
+    try {
+      var response = await http.get(url);
+     if (response.statusCode == 200) {
+        print('POST request succeesful');
+        print(response.body);
+      } else {
+        print("Else part");
+        print(response.body);
+      }
+    } catch (err) {
+      print("Inside catch part");
+      print(err);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

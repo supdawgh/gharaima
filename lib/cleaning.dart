@@ -1,33 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:gm/profile.dart';
+import 'package:http/http.dart' as http;
+import 'package:gm/globals.dart';
+import 'dart:convert';
+
 
 class MyClean extends StatefulWidget {
-  const MyClean({Key? key}) : super(key: key);
+  
+  String id;
+
+  MyClean({Key? key, required this.id}) : super(key: key);
 
   @override
   State<MyClean> createState() => _MyCleanState();
 }
 
 class _MyCleanState extends State<MyClean> {
-  List<String> names = [
-    'Hari Bahadur',
-    'Jad Talyor',
-    'Kasi Shrestha',
-    'Futle Singh',
-    'Hero Lal',
-    'Landon Mcbroom',
-    'Cole Spouse'
-  ];
-  List<String> locations = [
-    'Pokhara',
-    'Sankhamul',
-    'Premiun',
-    'Kohalpur',
-    'Humla',
-    'Jumla',
-    'Hngk'
-  ];
+  List<Map<String,dynamic>> data=[];
+  @override
+  void initState()
+  {
+    super.initState();
+    getCleaners().then((result) {
+      setState(() {
+        data=result;
+      });
+    });
+  }
+  Future<List<Map<String, dynamic>>> getCleaners() async {
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/category?category=cleaner');
+    try {
+      var response = await http.get(url);
+          
+      print(response);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data= jsonDecode(response.body)['workers'];
+        List<Map<String,dynamic>>result=List<Map<String,dynamic>>.from(data);
+        return result;
+       } 
+       else {
+        print("First else part");
+       throw Exception('Failed to load data');
+        
+      }
+    } catch (err) {
+      print("Second else part");
+      throw Exception('Failed to load data');
+
+    }
+  }
+  
   List<String> imageUrls = [
     'https://randomuser.me/api/portraits/med/men/41.jpg',
     'https://randomuser.me/api/portraits/med/men/55.jpg',
@@ -83,9 +108,11 @@ class _MyCleanState extends State<MyClean> {
                 ],
               )),
           ListView.builder(
-            itemCount: 7,
+            itemCount: data.length,
             shrinkWrap: true,
-            itemBuilder: (context, int index) => Container(
+            itemBuilder: (context, int index) {
+              final item=data[index];
+              return Container(
                 width: MediaQuery.of(context).size.width,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
@@ -122,14 +149,24 @@ class _MyCleanState extends State<MyClean> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(names[index],
+                                  Row(
+                                    crossAxisAlignment:CrossAxisAlignment.start,
+                                    children:[
+                                  Text(item['firstName'],
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.bold)),
-                                  Text(locations[index],
+                                        const SizedBox(width: 5.0,),
+                                  Text(item['lastName'],
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold))]),
+                                  Text(item['address'],
                                       style:
-                                          const TextStyle(color: Colors.grey)),
+                                        const TextStyle(color: Colors.grey)),
+
                                   RatingBar.builder(
                                     initialRating: 5,
                                     minRating: 1,
@@ -159,12 +196,16 @@ class _MyCleanState extends State<MyClean> {
                               vertical: 10.0,
                             ),
                             child: IconButton(
-                              onPressed: () {
+                              onPressed: ()
+                               {
+                                widget.id=item['_id'];
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const MyProfile()));
+                                            MyProfile(
+                                              id:widget.id
+                                            )));
                               },
                               color: Colors.red,
                               icon: const Icon(Icons.arrow_forward),
@@ -173,75 +214,13 @@ class _MyCleanState extends State<MyClean> {
                           ),
                         ],
                       )),
-                )),
+                )
+              );
+            }
+            
           ),
-        ]));
+        ]
+      )
+    );
   }
 }
-/*body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context,index){
-          final user = users[index];
-          final name=user ['name']['first']['last'];
-          final address =user ['address'];
-        // final imageUrl =user ['picture']['thumbnail'];
-
-          return ListTile(
-            leading:CircleAvatar(child: Text('${index+1}'),),
-           
-            title:Text(name),
-            subtitle: Text(address),
-          );
-         },*/
-            /*
-           Container(
-             padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.05,
-                    right: 50,
-                    left: 50),
-                    child: Column(children: [
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                            onChanged: (value) {
-                            },
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey[217],
-                              filled: true,
-                              hintText: "Full Name",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              )),
-                        ),
-                      ),]
-           ) 
-          
-        ],
-      )),
-       Container(
-             padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.02,
-                    right: 50,
-                    left: 50),
-                    child: Column(children: [
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                            onChanged: (value) {
-                            },
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey[217],
-                              filled: true,
-                              hintText: "Address",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              )),
-                        ),
-                      ),]
-                      
-           ) 
-          
-        ],
-      )),*/
