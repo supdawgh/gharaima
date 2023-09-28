@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gm/globals.dart';
+import 'package:gm/login.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -88,6 +89,9 @@ class _MyWorkerDashState extends State<MyWorkerDash> {
           ),            child:const Column(
               children: [
                 Text('Requests',style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold),),
+                SizedBox(height: 15.0,),
+                Text('3',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+
               ]
             ),
             
@@ -112,7 +116,10 @@ class _MyWorkerDashState extends State<MyWorkerDash> {
           ),
           child: const Column(
             children: [
-              Text('Work Done',style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold),)
+              Text('Work Done',style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold),),
+              SizedBox(height: 15.0,),
+              Text('1',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+
             ],
           ),
         )
@@ -120,23 +127,7 @@ class _MyWorkerDashState extends State<MyWorkerDash> {
 
       ],
     ),),
-      /*const SizedBox(height:60.0),
-           Container(
-            width: 100.0,
-            height: 100.0,
-            color: const Color.fromARGB(255, 214, 213, 213),
-                child: Container(
-                    margin: const EdgeInsets.all(10.0),
-                    padding: const EdgeInsets.all(10.0),
-                        child: const Column(
-                          crossAxisAlignment:CrossAxisAlignment.start,
-                          mainAxisAlignment:MainAxisAlignment.start,
-                            children:<Widget>[
-                            Text('so far so good'),
-                        ]
-                      ),
-                  ),
-              ),*/
+
               Container(
                          width: MediaQuery.of(context).size.width,
                          padding:const EdgeInsets.symmetric(vertical:30.0),  
@@ -197,12 +188,38 @@ child:  Column(
   Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
- const  Row(children: <Widget>[
+   Row(children: <Widget>[
   
-    CircleAvatar(
-      backgroundImage: AssetImage("assets/profile.jpg"),
-    
-    ),
+     PopupMenuButton<String>(
+                    offset: Offset(0, 40),
+                    icon:  Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
+                    ),
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => MyLogin2(
+                                    firstName: 'firstName',
+                                    lastName: '',
+                                    contactNo: '',
+                                    address: '',
+                                    password: password))));
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                        value: 'logout',
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
     SizedBox(
     width: 20.0,
     ),
@@ -237,4 +254,68 @@ child:  Column(
 ),
 );
 }
+}
+//REVIEW AND COST
+class MyCost extends StatefulWidget {
+  const MyCost({super.key});
+
+  @override
+  State<MyCost> createState() => _MyCostState();
+}
+
+class _MyCostState extends State<MyCost> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor:  const Color.fromRGBO(25, 135, 84, 10),
+      ),
+      body: ListView(
+        children: [
+          Padding(padding: EdgeInsets.symmetric(vertical:75.0,horizontal: 50.0),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:CrossAxisAlignment.start ,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Offer Your Fare : NPR',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 20.0,),
+                      TextFormField(
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor:Color.fromARGB(255, 214, 213, 213),
+                          hintText: "Enter Cost!",
+                          contentPadding: EdgeInsets.all(20.0),
+                          
+                        ),
+                      )
+                      
+                    ],
+                
+                  ),
+                ),
+                 const SizedBox(width: 15.0,),
+                Positioned(
+                  right: 10,
+                  top: 50,
+                    child: ElevatedButton(
+                      onPressed: (){},
+                       child: Text('Bid the price'),
+                    style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(25, 135, 84, 10)),
+               
+              ) )
+               
+              ],
+           ),
+          )
+        ],
+      ),
+    );
+  }
 }

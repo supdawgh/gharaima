@@ -68,6 +68,7 @@ class MyProfile extends StatefulWidget {
                   SizedBox(height: 30.0),
                   CircleAvatar(
                     radius: 60.0,
+                    backgroundColor: Color.fromRGBO(25, 135, 84, 10),
                     //backgroundImage: AssetImage('assets/dan.jpg'),
                   ),
                   SizedBox(
@@ -99,14 +100,16 @@ class MyProfile extends StatefulWidget {
                   Text(
                     data['address'],
                     style:
-                        TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
+                        TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height:20.0 ),
+                 Text('NRS.100',style:TextStyle(fontWeight:FontWeight.bold,fontSize: 17.0,color: Color.fromRGBO(25, 135, 84, 10))),
                   if (data.containsKey('review')&& data['review']is List)
                   SizedBox(height: 17.0,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Review',
+                      Text('Reviews',
                        style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

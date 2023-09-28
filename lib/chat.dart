@@ -31,29 +31,6 @@ class _MyChatState extends State<MyChat> {
   AppBar buildAppBar() {
     return AppBar(
       backgroundColor:  const Color.fromRGBO(25, 135, 84, 10),
-      title:const Row(
-        children: [
-        CircleAvatar(
-          backgroundImage: AssetImage('assets/dan.jpg'),
-        ),
-        SizedBox(width: 11.0,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Daniel Ceaser',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0),),
-            Text('active 3m ago',style: TextStyle(fontSize: 10.0),),
-          ],
-        )
-       ]
-     ), 
-     actions: 
-     [ 
-      IconButton(onPressed: (){
-        //get call
-      }, icon: const Icon(Icons.local_phone),),
-     const SizedBox(width: 17.0,),
-     ],
     );
     
     
@@ -262,19 +239,23 @@ payWithKhaltiInApp() {
 
 //KHALTI
   class Body extends StatefulWidget {
-  const Body({super.key});
+  const Body({Key? key}) : super(key: key);
 
   @override
-  State<Body> createState() => _BodyState();
+  State<Body> createState() => _HomePageState();
 }
 
-class _BodyState extends State<Body> {
+class _HomePageState extends State<Body> {
   String referenceId = "";
+  TextEditingController amountController =
+      TextEditingController(); // Controller for the text field
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Khalti Payment"),
+        title: const Text("Khalti Try Handim Na"),
+        backgroundColor: const Color.fromRGBO(25, 135, 84, 10),
       ),
       body: Center(
         child: Column(
@@ -282,29 +263,46 @@ class _BodyState extends State<Body> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Text field for entering the payment amount
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number, // Allow only numeric input
+                decoration: const InputDecoration(
+                  labelText: "Enter Amount",
+                ),
+              ),
+            ),
+
+            // Button to initiate payment
             ElevatedButton(
-                onPressed: () {
-                  payWithKhaltiInApp();
-                },
-                child: const Text("Pay with Khalti")),
-            Text(referenceId)
+              onPressed: () {
+                String paymentAmount =
+                    amountController.text; // Get the amount from the text field
+                payWithKhaltiInApp(int.parse(
+                    paymentAmount)); // Convert the string to an integer
+              },
+              child: const Text("Pay with Khalti"),
+            ),
+
+            Text(referenceId),
           ],
         ),
       ),
     );
   }
 
-  payWithKhaltiInApp() {
+  void payWithKhaltiInApp(int amount) {
     KhaltiScope.of(context).pay(
       config: PaymentConfig(
-        amount: 1000, //in paisa
+        amount: amount * 100, // Convert the amount to paisa
         productIdentity: 'Product Id',
         productName: 'Product Name',
         mobileReadOnly: false,
       ),
       preferences: [
         PaymentPreference.khalti,
-        
       ],
       onSuccess: onSuccess,
       onFailure: onFailure,
@@ -312,39 +310,59 @@ class _BodyState extends State<Body> {
     );
   }
 
-  void onSuccess(PaymentSuccessModel success) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Payment Successful'),
-      
-          actions: [
-            SimpleDialogOption(
-                child: const Text('OK'),
-                onPressed: () {
-                  setState(() {
-                    referenceId = success.idx;
-                  });
+  void onSuccess(PaymentSuccessModel success) async {
+    try {
+      // Send the PaymentSuccessModel data as a GET request to the URL
+      final response = await http.get(Uri.parse(
+          'http://$ip:5000/api/v1/success?idx=${success.idx}&amount=${success.amount}&token=${success.token}'));
 
-                  Navigator.pop(context);
-                })
-          ],
+      if (response.statusCode == 200) {
+        // Successfully sent data to the server
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Payment Successful'),
+              actions: [
+                SimpleDialogOption(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    setState(() {
+                      referenceId = success.idx;
+                    });
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            );
+          },
         );
-      },
-    );
+      } else {
+        // Handle server response error
+        print(
+            'Failed to send data to server. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle any exceptions that occur during the request
+      print('Error sending data to server: $e');
+    }
   }
-}
-   void onFailure(PaymentFailureModel failure) {
-    debugPrint(
-      failure.toString(),
-    );
+
+  void onFailure(PaymentFailureModel failure) {
+    debugPrint(failure.toString());
   }
 
   void onCancel() {
     debugPrint('Cancelled');
   }
 
+  @override
+  void dispose() {
+    amountController
+        .dispose(); // Dispose of the controller when the widget is disposed
+    super.dispose();
+  }
+}
 
 
 class ChatInputField extends StatelessWidget {

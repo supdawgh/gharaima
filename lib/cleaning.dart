@@ -189,6 +189,14 @@ class _MyCleanState extends State<MyClean> {
                               )
                             ],
                           ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.symmetric(horizontal: 20,
+                                vertical: 17),
+                                   
+                                    child: Text('NRS.100',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,
+                                    color:Color.fromRGBO(25, 135, 84, 10), ),),),
+
                           Container(
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(

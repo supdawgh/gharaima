@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return KhaltiScope(
       publicKey: "test_public_key_d5d9f63743584dc38753056b0cc737d5",
+      //"test_public_key_bc29bf31d1a94744906ae1f1518d66ab"
       enabledDebugging: true,
       builder: (context, navKey) {
         return MaterialApp(

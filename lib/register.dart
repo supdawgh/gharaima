@@ -297,12 +297,11 @@ class _MyRegisterState extends State<MyRegister> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MyWorker(
+                                        builder: (context) => MyLogin2(
                                               firstName: '',
                                               lastName: '',
                                               contactNo: '',
                                               address: '',
-                                              field: '',
                                               password: '',
                                             )));
                               },
@@ -345,6 +344,7 @@ class MyWorker extends StatefulWidget {
 }
 
 class _MyWorkerState extends State<MyWorker> {
+  var _value='-1';
    Future<http.Response> sendOtp() async {
     print("I have been called");
     var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
@@ -443,14 +443,14 @@ class _MyWorkerState extends State<MyWorker> {
                 ),
                 Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.001,
-                      right: 5,
-                      left: 5),
+                      top: MediaQuery.of(context).size.height * 0.01,
+                      right: 7,
+                      left: 7),
                   child: Center(
                     child: Column(children: [
                       TextFormField(
                         onChanged: (value) {
-                          widget.contactNo = int.parse(value) as String;
+                          widget.contactNo = value;
                         },
                         decoration: InputDecoration(
                           hintText: 'Contact no.',
@@ -469,7 +469,7 @@ class _MyWorkerState extends State<MyWorker> {
                         },
                       ),
                       const SizedBox(
-                        height: 5,
+                        height: 7,
                       ),
                       TextFormField(
                         onChanged: (value) {
@@ -491,32 +491,33 @@ class _MyWorkerState extends State<MyWorker> {
                           }
                         },
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
-                        onChanged: (value) {
-                          widget.field = value;
-                        },
-                        // obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Field',
-                          fillColor: Colors.grey[217],
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
+                     
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: DropdownButtonFormField(
+                          
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(borderRadius:BorderRadius.circular(7) )
                           ),
+                          value:_value,
+                          items: const [
+                            DropdownMenuItem(child: Text('-Select Field-'),value:'-1'),
+                            DropdownMenuItem(child: Text('Plumbing'),value:'plumber'),
+                            DropdownMenuItem(child: Text('Cleaning'),value:'cleaner'),
+                            DropdownMenuItem(child: Text('Electricity'),value:'electrician'),
+                            DropdownMenuItem(child: Text('Mechanic'),value:'mechanic'),
+                            DropdownMenuItem(child: Text('Parlour'),value:'parlour'),
+                            DropdownMenuItem(child: Text('Painting'),value:'painter'),
+
+                      
+                          ],
+                          onChanged: (v){
+                            widget.field=v as String;
+                          },
                         ),
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "Required";
-                          } else {
-                            return null;
-                          }
-                        },
                       ),
                       const SizedBox(
-                        height: 5,
+                        height: 7,
                       ),
                       TextFormField(
                         onChanged: (value) {
@@ -555,6 +556,7 @@ class _MyWorkerState extends State<MyWorker> {
                               child: IconButton(
                                 color: Colors.grey,
                                 onPressed: () async {
+                                  
                                   if (widget.firstName.isNotEmpty &&
                                       widget.lastName.isNotEmpty &&
                                       widget.contactNo.isNotEmpty &&
@@ -562,7 +564,9 @@ class _MyWorkerState extends State<MyWorker> {
                                       widget.field.isNotEmpty) {
                                     print('button Clicked');
                                   var response = await  sendOtp();
-                                  if (response.statusCode==200){
+                                  print(response.body);
+                                if (response.statusCode==200)
+                                {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gm/chat.dart';
+import 'package:gm/workerdash.dart';
 
 class MyExplain extends StatefulWidget {
   const MyExplain({super.key});
@@ -33,12 +34,12 @@ class _MyExplainState extends State<MyExplain> {
                   child: const Column(
                     children: [
                       TextField(
-                      
+                      maxLines: 2,
                         decoration: InputDecoration(
                          hintText: "enter here",
                           filled: true,
-                          fillColor: const Color.fromARGB(255, 214, 213, 213),
-                          contentPadding: EdgeInsets.symmetric(vertical: 57.0),
+                          fillColor:  Color.fromARGB(255, 214, 213, 213),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 57),
                         ),
                       ),
                      
@@ -47,13 +48,13 @@ class _MyExplainState extends State<MyExplain> {
                   ),
           ),
           Positioned(
-            bottom: 200,
+            bottom: 300,
             left: 50,
             child:ElevatedButton(onPressed: (){
               Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const MyChat(),
+                builder: (context) => const MyCost(),
               ),
             );
             },child: Text('Send'),
@@ -62,7 +63,7 @@ class _MyExplainState extends State<MyExplain> {
             ),) 
           ),
           
-        ],
+        ]
       )
     );
   }

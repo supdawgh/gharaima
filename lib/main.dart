@@ -1,5 +1,7 @@
 //import 'dart:js';
 
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:gm/chat.dart';
 import 'package:gm/cleaning.dart';
@@ -29,7 +31,7 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: 'login',
+      initialRoute: 'explain',
       home: MyLogin(
           firstName: firstName,
           lastName: lastName,
@@ -63,12 +65,13 @@ void main() {
               password: password,
             ),
         'dash': (context) => const MyDash(),
-        'plumbing': (context) => const MyPlumber(),
+        'plumbing': (context) =>  MyPlumber(id: id,),
         'cleaning': (context) =>  MyClean(id:id),
-        'electricity': (context) => const MyElectricity(),
+        'electricity': (context) =>  MyElectricity(id: id,),
         'profile': (context) =>  MyProfile(id:id),
         'explain':(context) => const MyExplain(),
-        'chat': (context) => const MyChat(),    
+        'chat': (context) => const MyChat(), 
+        'khalti':(context)=>const MyApp(),   
               
       }
     )

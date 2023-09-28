@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:gm/profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:gm/globals.dart';
 import 'dart:convert';
 
 class MyElectricity extends StatefulWidget {
-  const MyElectricity({super.key});
+  String id;
+   MyElectricity({super.key,required this.id});
 
   @override
   State<MyElectricity> createState() => _MyElectricityState();
@@ -172,7 +174,14 @@ class _MyElectricityState extends State<MyElectricity> {
                               vertical: 10.0,
                             ),
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                 widget.id = item['_id'];
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                MyProfile(id: widget.id)));
+                              },
                               color: Colors.red,
                               icon: const Icon(Icons.arrow_forward),
                             ),

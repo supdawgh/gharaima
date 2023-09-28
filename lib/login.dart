@@ -7,6 +7,8 @@ import 'package:gm/globals.dart';
 import 'package:form_validator/form_validator.dart';
 
 import 'package:gm/otp.dart';
+import 'package:gm/register.dart';
+import 'package:gm/workerdash.dart';
 import 'package:http/http.dart' as http;
 
 class MyLogin extends StatefulWidget {
@@ -199,39 +201,9 @@ class _MyLoginState extends State<MyLogin> {
                                 )
                               ],
                             ),
+                            
                             const SizedBox(
-                              height: 20,
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: const [
-                                        Text(
-                                          'continue with google',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15.0),
-                                        ),
-                                        SizedBox(
-                                          width: 15.0,
-                                        ),
-                                        Icon(
-                                          Icons.apple,
-                                          size: 30.0,
-                                          color: Colors.black,
-                                        )
-                                      ],
-                                    )),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
+                              height: 50,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,7 +217,7 @@ class _MyLoginState extends State<MyLogin> {
                                       style: TextStyle(
                                         //decoration: TextDecoration.underline,
                                         fontSize: 17,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     )),
@@ -269,7 +241,7 @@ class _MyLoginState extends State<MyLogin> {
                                         //decoration: TextDecoration.underline,
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                                     )),
                               ],
@@ -285,6 +257,261 @@ class _MyLoginState extends State<MyLogin> {
   }
 }
 
+//WORKER LOGIN
+class MyLogin2 extends StatefulWidget {
+  const MyLogin2(
+      {Key? key,
+      required this.firstName,
+      required this.lastName,
+      required this.contactNo,
+      required this.address,
+      required this.password})
+      : super(key: key);
+
+  final String firstName;
+  final String lastName;
+  final String contactNo;
+  final String address;
+  final String password;
+
+  @override
+  State<MyLogin2> createState() => _MyLogin2State();
+}
+
+class _MyLogin2State extends State<MyLogin2> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  int phoneNumber = 0;
+  String password = "";
+
+  Future<http.Response> loginUser() async {
+    print("I have been called");
+    var url = Uri.parse('http://$ip:5000/api/V1/worker/login');
+    var registerBody = {"phoneNumber": phoneNumber, "password": password};
+    try {
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(registerBody));
+      return response;
+    } catch (err) {
+      print("Inside catch part");
+      print(err);
+      // You might want to handle the error here or rethrow it.
+      throw err;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage('assets/Login.jpg'), fit: BoxFit.cover),
+      ),
+      child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 50, top: 130),
+                      child: const Text(
+                        'LOGIN ',
+                        style: TextStyle(color: Colors.white, fontSize: 35),
+                      ),
+                    ),
+                    Text(
+                      
+                        '         as Worker ',
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.45,
+                      right: 50,
+                      left: 50),
+                  child: Center(
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              validator: ValidationBuilder()
+                                  .phone()
+                                  .minLength(
+                                      10, 'Phone Number must be 10 characters')
+                                  .build(),
+                              onChanged: (value) {
+                                phoneNumber = int.parse(value) ?? 0;
+                              },
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                hintText: 'Contact No.',
+                                fillColor: Colors.grey[217],
+                                filled: true,
+                                prefixIcon: const Icon(Icons.phone),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              // validator: (val) {
+                              //   if (val!.isEmpty) {
+                              //     return "Required";
+                              //   } else {
+                              //      return null;
+                              //   }
+                              // },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              child: Center(
+                                child: Form(
+                                  child: Column(children: <Widget>[
+                                    TextFormField(
+                                      onChanged: (value) {
+                                        password = value;
+                                      },
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                        hintText: 'Password',
+                                        fillColor: Colors.grey[217],
+                                        filled: true,
+                                        prefixIcon: const Icon(Icons.lock),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        // errorText: password.isEmpty ? 'Required' : null,
+                                      ),
+                                      validator: ValidationBuilder()
+                                          .minLength(8,
+                                              'Password must be at least 8 characters')
+                                          .build(),
+                                    ),
+                                  ]),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Sign In',
+                                    style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w700)),
+                                CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: Colors.black87,
+                                  child: IconButton(
+                                    color: Colors.grey,
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        if (phoneNumber != 0 &&
+                                            password.isNotEmpty) {
+                                          var response = await loginUser();
+
+                                          if (response.statusCode == 200) {
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                     MyWorkerDash(contactNo: '',),
+                                              ),
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Your credentails do not match !'),
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              'Phone Number or Password are Required!'),
+                                          duration: Duration(seconds: 3),
+                                        ));
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_forward),
+                                  ),
+                                )
+                              ],
+                            ),
+                            
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyWorker(firstName: '', lastName: '', contactNo: '', address: '', field: '', password: password)));
+                                    },
+                                    child: const Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        //decoration: TextDecoration.underline,
+                                        fontSize: 17,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ForgotPass(
+                                                  firstName: widget.firstName,
+                                                  lastName: widget.lastName,
+                                                  contactNo: '',
+                                                  address: widget.address,
+                                                  password: widget.password,
+                                                )),
+                                      );
+                                    },
+                                    child: const Text(
+                                      'Forgot Password',
+                                      style: TextStyle(
+                                        //decoration: TextDecoration.underline,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    )),
+                              ],
+                            )
+                          ],
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}
 //ForGotPassWord
 class ForgotPass extends StatefulWidget {
   const ForgotPass(
