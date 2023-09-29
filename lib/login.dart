@@ -34,7 +34,7 @@ class MyLogin extends StatefulWidget {
 class _MyLoginState extends State<MyLogin> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  int phoneNumber = 0;
+  String phoneNumber = "";
   String password = "";
 
   Future<http.Response> loginUser() async {
@@ -90,7 +90,7 @@ class _MyLoginState extends State<MyLogin> {
                                       10, 'Phone Number must be 10 characters')
                                   .build(),
                               onChanged: (value) {
-                                phoneNumber = int.parse(value) ?? 0;
+                                phoneNumber = value;
                               },
                               enableSuggestions: false,
                               autocorrect: false,
@@ -201,7 +201,6 @@ class _MyLoginState extends State<MyLogin> {
                                 )
                               ],
                             ),
-                            
                             const SizedBox(
                               height: 50,
                             ),
@@ -281,10 +280,10 @@ class MyLogin2 extends StatefulWidget {
 class _MyLogin2State extends State<MyLogin2> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  int phoneNumber = 0;
+  String phoneNumber = "";
   String password = "";
 
-  Future<http.Response> loginUser() async {
+  Future<http.Response> loginWorker() async {
     print("I have been called");
     var url = Uri.parse('http://$ip:5000/api/V1/worker/login');
     var registerBody = {"phoneNumber": phoneNumber, "password": password};
@@ -323,10 +322,9 @@ class _MyLogin2State extends State<MyLogin2> {
                       ),
                     ),
                     Text(
-                      
-                        '         as Worker ',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      ),
+                      '         as Worker ',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ],
                 ),
                 Container(
@@ -346,7 +344,7 @@ class _MyLogin2State extends State<MyLogin2> {
                                       10, 'Phone Number must be 10 characters')
                                   .build(),
                               onChanged: (value) {
-                                phoneNumber = int.parse(value) ?? 0;
+                                phoneNumber = value;
                               },
                               enableSuggestions: false,
                               autocorrect: false,
@@ -421,7 +419,7 @@ class _MyLogin2State extends State<MyLogin2> {
                                       if (_formKey.currentState!.validate()) {
                                         if (phoneNumber != 0 &&
                                             password.isNotEmpty) {
-                                          var response = await loginUser();
+                                          var response = await loginWorker();
 
                                           if (response.statusCode == 200) {
                                             // ignore: use_build_context_synchronously
@@ -429,7 +427,9 @@ class _MyLogin2State extends State<MyLogin2> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                     MyWorkerDash(contactNo: '',),
+                                                    MyWorkerDash(
+                                                  contactNo: phoneNumber,
+                                                ),
                                               ),
                                             );
                                           } else {
@@ -457,7 +457,6 @@ class _MyLogin2State extends State<MyLogin2> {
                                 )
                               ],
                             ),
-                            
                             const SizedBox(
                               height: 50,
                             ),
@@ -466,7 +465,16 @@ class _MyLogin2State extends State<MyLogin2> {
                               children: [
                                 TextButton(
                                     onPressed: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyWorker(firstName: '', lastName: '', contactNo: '', address: '', field: '', password: password)));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyWorker(
+                                                  firstName: '',
+                                                  lastName: '',
+                                                  contactNo: '',
+                                                  address: '',
+                                                  field: '',
+                                                  password: password)));
                                     },
                                     child: const Text(
                                       'Sign Up',
@@ -512,6 +520,7 @@ class _MyLogin2State extends State<MyLogin2> {
     );
   }
 }
+
 //ForGotPassWord
 class ForgotPass extends StatefulWidget {
   const ForgotPass(

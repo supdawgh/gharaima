@@ -91,7 +91,7 @@ class _MyOtpState extends State<MyOtp> {
       print(response);
       if (response.statusCode == 200) {
         print('POST request succeesful');
-        var registerStatus=registerUser();
+        var registerStatus = registerUser();
         return registerStatus;
       } else {
         return false;
@@ -215,15 +215,14 @@ class MyOtp2 extends StatefulWidget {
   final String address;
   final String field;
   final String password;
-  const MyOtp2({
-    super.key,
-    required this.firstName,
-    required this.lastName,
-    required this.contactNo,
-    required this.address,
-    required this.field,
-    required this.password
-  });
+  const MyOtp2(
+      {super.key,
+      required this.firstName,
+      required this.lastName,
+      required this.contactNo,
+      required this.address,
+      required this.field,
+      required this.password});
 
   @override
   State<MyOtp2> createState() => _MyOtp2State();
@@ -248,8 +247,8 @@ class _MyOtp2State extends State<MyOtp2> {
           body: jsonEncode(registerBody));
       print(response);
       if (response.statusCode == 200) {
-       var registerStatus= registerWorker();
-      return registerStatus;
+        var registerStatus = registerWorker();
+        return registerStatus;
       } else {
         return false;
       }
@@ -267,7 +266,6 @@ class _MyOtp2State extends State<MyOtp2> {
       "address": widget.address,
       "field": widget.field,
       "password": widget.password
-      
     };
     print(registerBody);
     try {
@@ -333,13 +331,15 @@ class _MyOtp2State extends State<MyOtp2> {
                     width: double.infinity,
                   ),
                   ElevatedButton(
-                    onPressed: ()async {
+                    onPressed: () async {
                       bool validateValue = await validateOtp();
-                       if (validateValue == true) {
+                      if (validateValue == true) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  MyWorkerDash(contactNo: '',)),
+                              builder: (context) => MyWorkerDash(
+                                    contactNo: widget.contactNo,
+                                  )),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -416,7 +416,7 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyPlumber(id:'')));
+                                builder: (context) => MyPlumber(id: '')));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.cleaning_services, "Cleaning"),
@@ -434,7 +434,7 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyElectricity(id:'')));
+                                builder: (context) => MyElectricity(id: '')));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.brush_sharp, "Parlor"),
@@ -442,7 +442,7 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyPlumber(id:'')));
+                                builder: (context) => MyPlumber(id: '')));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.car_repair, "Mechanic"),
@@ -450,7 +450,9 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyPlumber(id: '',)));
+                                builder: (context) => MyPlumber(
+                                      id: '',
+                                    )));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.format_paint_rounded, "Paint"),
@@ -458,7 +460,9 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyPlumber(id: '',)));
+                                builder: (context) => MyPlumber(
+                                      id: '',
+                                    )));
                       })
                 ],
               )),
@@ -639,9 +643,7 @@ class _MyDashState extends State<MyDash> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => MySearch(
-                            id: '')), 
+                    MaterialPageRoute(builder: (context) => MySearch(id: '')),
                   );
                 },
                 child: const Icon(Icons.arrow_forward),

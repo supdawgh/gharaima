@@ -1,7 +1,3 @@
-//import 'dart:js';
-
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:gm/chat.dart';
 import 'package:gm/cleaning.dart';
@@ -18,20 +14,17 @@ import 'package:gm/workerdash.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'khalti.dart';
 
-
 void main() {
-  
   String firstName = "";
   String lastName = "";
   String contactNo = "";
   String address = "";
   String password = "";
-  String id="";
+  String id = "";
 
-  runApp(
-    MaterialApp(
+  runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: 'explain',
+      initialRoute: 'login',
       home: MyLogin(
           firstName: firstName,
           lastName: lastName,
@@ -51,12 +44,15 @@ void main() {
             contactNo: contactNo,
             address: address,
             password: password),
-        'worker': (context) =>  MyWorker( firstName: firstName,
+        'worker': (context) => MyWorker(
+              firstName: firstName,
               lastName: lastName,
               contactNo: contactNo,
               address: address,
-              field:'',password: '',),
-        'workerdash': (context) =>  MyWorkerDash(contactNo:''),
+              field: '',
+              password: '',
+            ),
+        'workerdash': (context) => MyWorkerDash(contactNo: contactNo),
         'otp': (context) => MyOtp(
               firstName: firstName,
               lastName: lastName,
@@ -65,17 +61,16 @@ void main() {
               password: password,
             ),
         'dash': (context) => const MyDash(),
-        'plumbing': (context) =>  MyPlumber(id: id,),
-        'cleaning': (context) =>  MyClean(id:id),
-        'electricity': (context) =>  MyElectricity(id: id,),
-        'profile': (context) =>  MyProfile(id:id),
-        'explain':(context) => const MyExplain(),
-        'chat': (context) => const MyChat(), 
-        'khalti':(context)=>const MyApp(),   
-              
-      }
-    )
-  );
-  
+        'plumbing': (context) => MyPlumber(
+              id: id,
+            ),
+        'cleaning': (context) => MyClean(id: id),
+        'electricity': (context) => MyElectricity(
+              id: id,
+            ),
+        'profile': (context) => MyProfile(id: id),
+        'explain': (context) => const MyExplain(),
+        'chat': (context) => const MyChat(),
+        'khalti': (context) => const MyApp(),
+      }));
 }
-
