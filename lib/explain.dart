@@ -1,17 +1,52 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gm/chat.dart';
+import 'package:gm/globals.dart';
 import 'package:gm/otp.dart';
 import 'package:gm/workerdash.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class MyExplain extends StatefulWidget {
-  const MyExplain({super.key});
+  final String id;
+  final String userId;
+  const MyExplain({super.key, required this.id, required this.userId});
 
   @override
   State<MyExplain> createState() => _MyExplainState();
 }
 
 class _MyExplainState extends State<MyExplain> {
+  String message = " ";
+  Future<void> createHireRecord() async {
+    var url = Uri.parse('http://$ip:5000/api/V1/hire');
+    var registerBody = {
+      "user_id": widget.userId,
+      "worker_id": widget.id,
+      "serviceDate": DateTime.now().toIso8601String(),
+      "message": message,
+      "completed": false,
+      "settled": false,
+      "serviceCost": 0
+    };
+    try {
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(registerBody));
+      print(response);
+      if (response.statusCode == 200) {
+        print('POST request succeessful');
+        print(response.body);
+      } else {
+        print("Else part");
+        print(response.body);
+      }
+    } catch (err) {
+      print("Inside catch part");
+      print(err);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +69,7 @@ class _MyExplainState extends State<MyExplain> {
                 top: MediaQuery.of(context).size.height * 0.15,
                 right: 50,
                 left: 50),
-            child: const Column(
+            child: Column(
               children: [
                 TextField(
                   maxLines: 2,
@@ -45,6 +80,9 @@ class _MyExplainState extends State<MyExplain> {
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 30, vertical: 57),
                   ),
+                  onChanged: (text) {
+                    message = text;
+                  },
                 ),
               ],
             ),
@@ -54,10 +92,13 @@ class _MyExplainState extends State<MyExplain> {
               left: 50,
               child: ElevatedButton(
                 onPressed: () {
+                  createHireRecord();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MyDash(),
+                      builder: (context) => MyDash(
+                        userId: widget.userId,
+                      ),
                     ),
                   );
                 },

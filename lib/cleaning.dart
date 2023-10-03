@@ -7,8 +7,8 @@ import 'dart:convert';
 
 class MyClean extends StatefulWidget {
   String id;
-
-  MyClean({Key? key, required this.id}) : super(key: key);
+  String userId;
+  MyClean({Key? key, required this.id, required this.userId}) : super(key: key);
 
   @override
   State<MyClean> createState() => _MyCleanState();
@@ -219,8 +219,10 @@ class _MyCleanState extends State<MyClean> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                MyProfile(id: widget.id)));
+                                            builder: (context) => MyProfile(
+                                                  id: widget.id,
+                                                  userId: widget.userId,
+                                                )));
                                   },
                                   color: Colors.red,
                                   icon: const Icon(Icons.arrow_forward),

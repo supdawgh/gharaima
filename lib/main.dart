@@ -21,6 +21,7 @@ void main() {
   String address = "";
   String password = "";
   String id = "";
+  String userId = "";
 
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -30,6 +31,7 @@ void main() {
           lastName: lastName,
           contactNo: contactNo,
           address: address,
+          userId: userId,
           password: password),
       routes: {
         'login': (context) => MyLogin(
@@ -37,12 +39,14 @@ void main() {
             lastName: lastName,
             contactNo: contactNo,
             address: address,
+            userId: userId,
             password: password),
         'register': (context) => MyRegister(
             firstName: firstName,
             lastName: lastName,
             contactNo: contactNo,
             address: address,
+            userId: userId,
             password: password),
         'worker': (context) => MyWorker(
               firstName: firstName,
@@ -59,17 +63,28 @@ void main() {
               contactNo: contactNo,
               address: address,
               password: password,
+              userId: userId,
             ),
-        'dash': (context) => const MyDash(),
+        'dash': (context) => MyDash(
+              userId: userId,
+            ),
         'plumbing': (context) => MyPlumber(
               id: id,
+              userId: userId,
             ),
-        'cleaning': (context) => MyClean(id: id),
+        'cleaning': (context) => MyClean(
+              id: id,
+              userId: userId,
+            ),
         'electricity': (context) => MyElectricity(
               id: id,
+              userId: userId,
             ),
-        'profile': (context) => MyProfile(id: id),
-        'explain': (context) => const MyExplain(),
+        'profile': (context) => MyProfile(
+              id: id,
+              userId: userId,
+            ),
+        'explain': (context) => MyExplain(id: id, userId: userId),
         'chat': (context) => const MyChat(),
         'khalti': (context) => const MyApp(),
       }));

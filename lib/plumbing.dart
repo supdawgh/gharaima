@@ -9,7 +9,8 @@ import 'dart:convert';
 
 class MyPlumber extends StatefulWidget {
   String id;
-  MyPlumber({super.key, required this.id});
+  String userId;
+  MyPlumber({super.key, required this.id, required this.userId});
 
   @override
   State<MyPlumber> createState() => _MyPlumberState();
@@ -128,7 +129,6 @@ class _MyPlumberState extends State<MyPlumber> {
                                     ),
                                   ),
                                   const SizedBox(width: 5.0),
-                                  
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -177,7 +177,7 @@ class _MyPlumberState extends State<MyPlumber> {
                                     width: 20,
                                     height: 20,
                                     child: Text('cost'),
-                                    )
+                                  )
                                 ],
                               ),
                               Container(
@@ -192,8 +192,10 @@ class _MyPlumberState extends State<MyPlumber> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                MyProfile(id: widget.id)));
+                                            builder: (context) => MyProfile(
+                                                  id: widget.id,
+                                                  userId: widget.userId,
+                                                )));
                                   },
                                   color: Colors.red,
                                   icon: const Icon(Icons.arrow_forward),

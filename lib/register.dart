@@ -16,6 +16,7 @@ class MyRegister extends StatefulWidget {
   String contactNo;
   String address;
   String password;
+  String userId;
 
   MyRegister(
       {Key? key,
@@ -23,7 +24,8 @@ class MyRegister extends StatefulWidget {
       required this.lastName,
       required this.contactNo,
       required this.address,
-      required this.password})
+      required this.password,
+      required this.userId})
       : super(
           key: key,
         );
@@ -33,7 +35,6 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
-  
   Future<http.Response> sendOtp() async {
     var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
     var registerBody = {"phoneNumber": widget.contactNo};
@@ -247,33 +248,30 @@ class _MyRegisterState extends State<MyRegister> {
                                       widget.password.isNotEmpty) {
                                     print('button Clicked');
 
-                                    var response= await sendOtp();
+                                    var response = await sendOtp();
                                     print(response.body);
-                                    if (response.statusCode ==200){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MyOtp(
+                                    if (response.statusCode == 200) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MyOtp(
                                                 firstName: widget.firstName,
                                                 lastName: widget.lastName,
                                                 contactNo: widget.contactNo,
                                                 address: widget.address,
                                                 password: widget.password,
-                                              )
-                                          ),
-                                    );
-                                  }else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                    'Invalid data entry !'),
-                                                duration: Duration(seconds: 3),
-                                              ),
-                                            );
-                                          }
-                                         }
-                                          else {
+                                                userId: widget.userId)),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Invalid data entry !'),
+                                          duration: Duration(seconds: 3),
+                                        ),
+                                      );
+                                    }
+                                  } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
                                       content: Text(
@@ -298,12 +296,12 @@ class _MyRegisterState extends State<MyRegister> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => MyLogin2(
-                                              firstName: '',
-                                              lastName: '',
-                                              contactNo: '',
-                                              address: '',
-                                              password: '',
-                                            )));
+                                            firstName: '',
+                                            lastName: '',
+                                            contactNo: '',
+                                            address: '',
+                                            password: '',
+                                            userId: '')));
                               },
                               child: const Text(
                                 'Use as Worker',
@@ -344,8 +342,8 @@ class MyWorker extends StatefulWidget {
 }
 
 class _MyWorkerState extends State<MyWorker> {
-  var _value='-1';
-   Future<http.Response> sendOtp() async {
+  var _value = '-1';
+  Future<http.Response> sendOtp() async {
     print("I have been called");
     var url = Uri.parse('http://$ip:5000/api/V1/system/sendOtp');
     var registerBody = {"phoneNumber": widget.contactNo};
@@ -491,28 +489,32 @@ class _MyWorkerState extends State<MyWorker> {
                           }
                         },
                       ),
-                     
                       Padding(
                         padding: const EdgeInsets.all(9.0),
                         child: DropdownButtonFormField(
-                          
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius:BorderRadius.circular(7) )
-                          ),
-                          value:_value,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7))),
+                          value: _value,
                           items: const [
-                            DropdownMenuItem(child: Text('-Select Field-'),value:'-1'),
-                            DropdownMenuItem(child: Text('Plumbing'),value:'plumber'),
-                            DropdownMenuItem(child: Text('Cleaning'),value:'cleaner'),
-                            DropdownMenuItem(child: Text('Electricity'),value:'electrician'),
-                            DropdownMenuItem(child: Text('Mechanic'),value:'mechanic'),
-                            DropdownMenuItem(child: Text('Parlour'),value:'parlour'),
-                            DropdownMenuItem(child: Text('Painting'),value:'painter'),
-
-                      
+                            DropdownMenuItem(
+                                child: Text('-Select Field-'), value: '-1'),
+                            DropdownMenuItem(
+                                child: Text('Plumbing'), value: 'plumber'),
+                            DropdownMenuItem(
+                                child: Text('Cleaning'), value: 'cleaner'),
+                            DropdownMenuItem(
+                                child: Text('Electricity'),
+                                value: 'electrician'),
+                            DropdownMenuItem(
+                                child: Text('Mechanic'), value: 'mechanic'),
+                            DropdownMenuItem(
+                                child: Text('Parlour'), value: 'parlour'),
+                            DropdownMenuItem(
+                                child: Text('Painting'), value: 'painter'),
                           ],
-                          onChanged: (v){
-                            widget.field=v as String;
+                          onChanged: (v) {
+                            widget.field = v as String;
                           },
                         ),
                       ),
@@ -556,43 +558,36 @@ class _MyWorkerState extends State<MyWorker> {
                               child: IconButton(
                                 color: Colors.grey,
                                 onPressed: () async {
-                                  
                                   if (widget.firstName.isNotEmpty &&
                                       widget.lastName.isNotEmpty &&
                                       widget.contactNo.isNotEmpty &&
                                       widget.address.isNotEmpty &&
                                       widget.field.isNotEmpty) {
                                     print('button Clicked');
-                                  var response = await  sendOtp();
-                                  print(response.body);
-                                if (response.statusCode==200)
-                                {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MyOtp2(
-                                                  firstName: widget.firstName,
-                                                  lastName: widget.lastName,
-                                                  contactNo: widget.contactNo,
-                                                  address: widget.address,
-                                                  field: widget.field,
-                                                  password: widget.password,
-                                                )
-                                          )
+                                    var response = await sendOtp();
+                                    print(response.body);
+                                    if (response.statusCode == 200) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyOtp2(
+                                                    firstName: widget.firstName,
+                                                    lastName: widget.lastName,
+                                                    contactNo: widget.contactNo,
+                                                    address: widget.address,
+                                                    field: widget.field,
+                                                    password: widget.password,
+                                                  )));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Invalid data entry !'),
+                                          duration: Duration(seconds: 3),
+                                        ),
                                       );
-                                  }
-                                  else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                    'Invalid data entry !'),
-                                                duration: Duration(seconds: 3),
-                                              ),
-                                            );
-                                          }
-                                        }
-                                  else {
+                                    }
+                                  } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(

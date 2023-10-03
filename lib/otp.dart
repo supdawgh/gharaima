@@ -22,15 +22,16 @@ class MyOtp extends StatefulWidget {
   final String contactNo;
   final String address;
   final String password;
+  final String userId;
 
-  const MyOtp({
-    super.key,
-    required this.firstName,
-    required this.lastName,
-    required this.contactNo,
-    required this.address,
-    required this.password,
-  });
+  const MyOtp(
+      {super.key,
+      required this.firstName,
+      required this.lastName,
+      required this.contactNo,
+      required this.address,
+      required this.password,
+      required this.userId});
 
 /*  Widget _selectedCleaning({
 required Color color,
@@ -181,7 +182,9 @@ class _MyOtpState extends State<MyOtp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MyDash()),
+                              builder: (context) => MyDash(
+                                    userId: widget.userId,
+                                  )),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -367,7 +370,8 @@ class _MyOtp2State extends State<MyOtp2> {
 //DASHBOARD
 
 class MyDash extends StatefulWidget {
-  const MyDash({Key? key}) : super(key: key);
+  final String userId;
+  const MyDash({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<MyDash> createState() => _MyDashState();
@@ -416,7 +420,10 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyPlumber(id: '')));
+                                builder: (context) => MyPlumber(
+                                      id: '',
+                                      userId: widget.userId,
+                                    )));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.cleaning_services, "Cleaning"),
@@ -426,6 +433,7 @@ class _MyDashState extends State<MyDash> {
                             MaterialPageRoute(
                                 builder: (context) => MyClean(
                                       id: '',
+                                      userId: widget.userId,
                                     )));
                       }),
                   IconButton(
@@ -434,7 +442,10 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyElectricity(id: '')));
+                                builder: (context) => MyElectricity(
+                                      id: '',
+                                      userId: widget.userId,
+                                    )));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.brush_sharp, "Parlor"),
@@ -442,7 +453,8 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyPlumber(id: '')));
+                                builder: (context) =>
+                                    MyPlumber(id: '', userId: widget.userId)));
                       }),
                   IconButton(
                       icon: _gridItem(Icons.car_repair, "Mechanic"),
@@ -452,6 +464,7 @@ class _MyDashState extends State<MyDash> {
                             MaterialPageRoute(
                                 builder: (context) => MyPlumber(
                                       id: '',
+                                      userId: widget.userId,
                                     )));
                       }),
                   IconButton(
@@ -460,9 +473,8 @@ class _MyDashState extends State<MyDash> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyPlumber(
-                                      id: '',
-                                    )));
+                                builder: (context) =>
+                                    MyPlumber(id: '', userId: widget.userId)));
                       })
                 ],
               )),
@@ -589,6 +601,7 @@ class _MyDashState extends State<MyDash> {
                                     lastName: '',
                                     contactNo: '',
                                     address: '',
+                                    userId: '',
                                     password: password))));
                       }
                     },
@@ -629,9 +642,8 @@ class _MyDashState extends State<MyDash> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MySearch(
-                          id: '',
-                        )),
+                    builder: (context) =>
+                        MySearch(id: '', userId: widget.userId)),
               );
             },
             child: TextField(
@@ -643,7 +655,9 @@ class _MyDashState extends State<MyDash> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MySearch(id: '')),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            MySearch(id: '', userId: widget.userId)),
                   );
                 },
                 child: const Icon(Icons.arrow_forward),
@@ -665,7 +679,8 @@ class _MyDashState extends State<MyDash> {
 //SEARCH
 class MySearch extends StatefulWidget {
   String id;
-  MySearch({super.key, required this.id});
+  String userId;
+  MySearch({super.key, required this.id, required this.userId});
 
   @override
   State<MySearch> createState() => _MySearchState();
@@ -860,8 +875,9 @@ class _MySearchState extends State<MySearch> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                MyProfile(id: widget.id)));
+                                            builder: (context) => MyProfile(
+                                                id: widget.id,
+                                                userId: widget.userId)));
                                   },
                                   color: Colors.red,
                                   icon: const Icon(Icons.arrow_forward),

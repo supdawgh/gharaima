@@ -12,12 +12,13 @@ import 'package:gm/workerdash.dart';
 import 'package:http/http.dart' as http;
 
 class MyLogin extends StatefulWidget {
-  const MyLogin(
+  MyLogin(
       {Key? key,
       required this.firstName,
       required this.lastName,
       required this.contactNo,
       required this.address,
+      required this.userId,
       required this.password})
       : super(key: key);
 
@@ -26,6 +27,7 @@ class MyLogin extends StatefulWidget {
   final String contactNo;
   final String address;
   final String password;
+  String userId;
 
   @override
   State<MyLogin> createState() => _MyLoginState();
@@ -45,6 +47,8 @@ class _MyLoginState extends State<MyLogin> {
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(registerBody));
+      final Map<String, dynamic> data = json.decode(response.body);
+      widget.userId = data['user_id'];
       return response;
     } catch (err) {
       print("Inside catch part");
@@ -172,8 +176,8 @@ class _MyLoginState extends State<MyLogin> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const MyDash(),
+                                                builder: (context) => MyDash(
+                                                    userId: widget.userId),
                                               ),
                                             );
                                           } else {
@@ -226,16 +230,16 @@ class _MyLoginState extends State<MyLogin> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ForgotPass(
-                                                  firstName: widget.firstName,
-                                                  lastName: widget.lastName,
-                                                  contactNo: '',
-                                                  address: widget.address,
-                                                  password: widget.password,
-                                                )),
+                                                firstName: widget.firstName,
+                                                lastName: widget.lastName,
+                                                contactNo: '',
+                                                address: widget.address,
+                                                password: widget.password,
+                                                userId: widget.userId)),
                                       );
                                     },
                                     child: const Text(
-                                      'Forgot Password',
+                                      '',
                                       style: TextStyle(
                                         //decoration: TextDecoration.underline,
                                         fontSize: 17,
@@ -264,7 +268,8 @@ class MyLogin2 extends StatefulWidget {
       required this.lastName,
       required this.contactNo,
       required this.address,
-      required this.password})
+      required this.password,
+      required this.userId})
       : super(key: key);
 
   final String firstName;
@@ -272,6 +277,7 @@ class MyLogin2 extends StatefulWidget {
   final String contactNo;
   final String address;
   final String password;
+  final String userId;
 
   @override
   State<MyLogin2> createState() => _MyLogin2State();
@@ -496,11 +502,12 @@ class _MyLogin2State extends State<MyLogin2> {
                                                   contactNo: '',
                                                   address: widget.address,
                                                   password: widget.password,
+                                                  userId: widget.userId,
                                                 )),
                                       );
                                     },
                                     child: const Text(
-                                      'Forgot Password',
+                                      '',
                                       style: TextStyle(
                                         //decoration: TextDecoration.underline,
                                         fontSize: 17,
@@ -529,12 +536,14 @@ class ForgotPass extends StatefulWidget {
       required this.lastName,
       required this.contactNo,
       required this.address,
-      required this.password});
+      required this.password,
+      required this.userId});
   final String firstName;
   final String lastName;
   final String contactNo;
   final String address;
   final String password;
+  final String userId;
 
   @override
   State<ForgotPass> createState() => _ForgotPassState();
@@ -586,7 +595,7 @@ class _ForgotPassState extends State<ForgotPass> {
             child: const Column(
               children: <Widget>[
                 Text(
-                  "FORGOT PASSWORD?",
+                  "",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30,
@@ -609,24 +618,24 @@ class _ForgotPassState extends State<ForgotPass> {
               context,
               MaterialPageRoute(
                   builder: (context) => MyOtp(
-                        firstName: widget.firstName,
-                        lastName: widget.lastName,
-                        contactNo: widget.contactNo,
-                        address: widget.address,
-                        password: widget.password,
-                      )),
+                      firstName: widget.firstName,
+                      lastName: widget.lastName,
+                      contactNo: widget.contactNo,
+                      address: widget.address,
+                      password: widget.password,
+                      userId: widget.userId)),
             );
             {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const MyOtp(
-                          firstName: '',
-                          lastName: '',
-                          contactNo: '',
-                          address: '',
-                          password: '',
-                        )),
+                        firstName: '',
+                        lastName: '',
+                        contactNo: '',
+                        address: '',
+                        password: '',
+                        userId: '')),
               );
             }
           },

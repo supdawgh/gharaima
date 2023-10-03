@@ -342,6 +342,7 @@ class _MyWorkerDashState extends State<MyWorkerDash> {
                                     lastName: '',
                                     contactNo: '',
                                     address: '',
+                                    userId: '',
                                     password: password))));
                       }
                     },

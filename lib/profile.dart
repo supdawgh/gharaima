@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:gm/chat.dart';
 import 'package:gm/cleaning.dart';
 import 'package:gm/explain.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +10,8 @@ import 'dart:convert';
 
 class MyProfile extends StatefulWidget {
   final String id;
-  const MyProfile({super.key, required this.id});
+  final String userId;
+  const MyProfile({super.key, required this.id, required this.userId});
   @override
   State<MyProfile> createState() => _MyProfileState();
 }
@@ -176,7 +176,10 @@ class _MyProfileState extends State<MyProfile> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MyClean(id: '')));
+                                      builder: (context) => MyClean(
+                                            id: widget.id,
+                                            userId: widget.userId,
+                                          )));
                             },
                             child: const Text('Unhire'),
                             style: ElevatedButton.styleFrom(
@@ -194,7 +197,9 @@ class _MyProfileState extends State<MyProfile> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const MyExplain()));
+                                      builder: (context) => MyExplain(
+                                          id: widget.id,
+                                          userId: widget.userId)));
                             },
                             child: const Text('Hire'),
                             style: ElevatedButton.styleFrom(
